@@ -15,7 +15,7 @@ connection();
 if (process.env.NODE_ENV=='development') {
     app.use(morgan('dev'))   
 }
-
+app.use(express.json())
 
 //routes
 app.use('/api/v1/bootcamps', bootcamps);
