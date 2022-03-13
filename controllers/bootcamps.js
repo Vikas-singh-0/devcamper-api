@@ -4,7 +4,8 @@
 module.exports.getAllBootcamps = ((req,res)=>{
     return res.status(200).json({
       status:"success",
-      data:"all bootcamps"
+      data:"all bootcamps",
+     
     })
 })
 
