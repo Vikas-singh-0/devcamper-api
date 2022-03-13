@@ -4,7 +4,10 @@ const bootcamps =   require('./routes/bootcamps')
 const morgan =      require('morgan')
 const connection =  require('./config/db')
 const colors =      require('colors')
+const errorHandler =require('./middlewares/error')
+
 const app = express()
+
 
 //environment  variabbles
 env.config({path:'./config/config.env'});
@@ -23,7 +26,7 @@ app.use('/api/v1/bootcamps', bootcamps);
 // app.use('/api/v1/auth', auth);
 // app.use('/api/v1/users', users);
 // app.use('/api/v1/reviews', reviews);
-
+app.use(errorHandler)
 
 //server
 app.listen(PORT,(err)=>{
