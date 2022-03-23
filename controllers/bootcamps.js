@@ -1,11 +1,12 @@
+const asyncHandler = require("../middlewares/async");
 const Bootcamp = require("../models/bootcamp_model");
 const errorResponse = require("../utils/errorResponse");
+const geocoder = require("../utils/geoCoder");
 
 // @desc    Get All Bootcamps
 //@route    GET api/v1/bootcamps
 //@access   Public
-module.exports.getAllBootcamps = async (req, res,next) => {
-  try {
+module.exports.getAllBootcamps =asyncHandler(async (req, res,next) => {
     const bootcamps = await Bootcamp.find({});
     return res
       .status(200)
@@ -14,16 +15,13 @@ module.exports.getAllBootcamps = async (req, res,next) => {
          count: bootcamps.length,
          data: bootcamps 
       });
-  } catch (error) {
-    next(error)
-  }
-};
+})
 
 // @desc    Get One Bootcamp
 //@route    GET api/v1/bootcamps/:id
 //@access   Public
-module.exports.getOneBootcamp = async (req, res, next) => {
-  try {
+module.exports.getOneBootcamp =asyncHandler( async (req, res, next) => {
+  
     const bootcamp = await Bootcamp.findById(req.params.id);
     if (!bootcamp) {
       return res.status(400).json({ success: false });
@@ -32,32 +30,24 @@ module.exports.getOneBootcamp = async (req, res, next) => {
       status: "success",
       data: bootcamp,
     });
-  } catch (error) {
-    next(error)
-  }
-};
+});
 
 // @desc    POST Create Bootcamp
 //@route    POST api/v1/bootcamps
 //@access   Private
-module.exports.createNewBootcamp = async (req, res,next) => {
-  try {
+module.exports.createNewBootcamp = asyncHandler(async (req, res,next) => {
     const bootcamp = await Bootcamp.create(req.body);
 
     return res.status(200).json({
       status: "success",
       data: bootcamp,
-    });
-  } catch (error) {
-    next(error)
-  }
-};
+    });  
+});
 
 // @desc    Update one Bootcamp
 //@route    PUT api/v1/bootcamps/:id
 //@access   Private
-module.exports.updateOneBootcamp = async (req, res,next) => {
-  try {
+module.exports.updateOneBootcamp =asyncHandler(async (req, res,next) => {
     const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true,
@@ -69,16 +59,12 @@ module.exports.updateOneBootcamp = async (req, res,next) => {
       status: "success",
       data: bootcamp,
     });
-  } catch (error) {
-    next(error)
-  }
-};
+});
 
 // @desc    Delete one Bootcamps
 //@route    DELETE api/v1/bootcamps/:id
 //@access   Private
-module.exports.deleteOneBootcamp = async (req, res,next) => {
-  try {
+module.exports.deleteOneBootcamp = asyncHandler(async (req, res,next) => {
     const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
     if (!bootcamp) {
       return res.status(400).json({ success: false });
@@ -87,7 +73,26 @@ module.exports.deleteOneBootcamp = async (req, res,next) => {
       status: "success",
       data: bootcamp,
     });
-  } catch (error) {
-    next(error)
-  }
-};
+});
+
+// @desc    Get  Bootcamps within the radius
+//@route    DELETE api/v1/bootcamps/radius/:zipcode/:distance
+//@access   Private
+module.exports.getBootcampsWithinRadius = asyncHandler(async (req, res,next) => {
+  const {zipcode,distance}=req.params
+  const loc = await geocoder.geocode(zipcode)
+  // console.log(loc);
+  const lat = loc[0].latitude
+  const lon = loc[0].longitude 
+
+  const radius = distance/3963
+
+  const bootcamps = await Bootcamp.find({
+    location:{$geoWithin:{$centerSphere:[[lat,lon],radius]}}
+  });
+  return res.status(200).json({
+    status: "success",
+    data: bootcamps,
+    length:bootcamps.length
+  });
+});

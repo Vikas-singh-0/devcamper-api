@@ -3,8 +3,6 @@ const errorHandler = (err,req,res,next)=>{
     let newError = {...err};
     newError.message=err.message;
 
-    // console.log(err);
-
     if(err.name=="CastError"){
         const message=`bootcamp with id ${err.value} not found`
         newError=new errorResponse(404,message)

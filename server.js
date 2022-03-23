@@ -5,8 +5,8 @@ const morgan =      require('morgan')
 const connection =  require('./config/db')
 const colors =      require('colors')
 const errorHandler =require('./middlewares/error')
-
-const app = express()
+const geocoder =    require('./utils/geoCoder')
+const app =         express()
 
 
 //environment  variabbles
@@ -22,6 +22,7 @@ app.use(express.json())
 
 //routes
 app.use('/api/v1/bootcamps', bootcamps);
+
 // app.use('/api/v1/courses', courses);
 // app.use('/api/v1/auth', auth);
 // app.use('/api/v1/users', users);
