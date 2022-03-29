@@ -78,9 +78,11 @@ const BootcampSchema = new mongoose.Schema({
     acceptGI:{
         type:Boolean,
         default:false
-    }
+    },
 },{
-    timestamps:true
+    timestamps:true,
+    toJSON:{virtuals:true},
+    toObject:{virtuals:true}
 })
 
 //middlewares
@@ -106,7 +108,13 @@ BootcampSchema.pre('save',async function(next){
     }
     this.address = undefined
     next()
-
 }) 
+
+BootcampSchema.virtual('courses',{
+    ref:'Course',
+    localField:'_id',
+    foreignField:'bootcamp',
+    justOne:false
+})
 
 module.exports = mongoose.model('Bootcamp',BootcampSchema);

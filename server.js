@@ -6,6 +6,7 @@ const connection =  require('./config/db')
 const colors =      require('colors')
 const errorHandler =require('./middlewares/error')
 const geocoder =    require('./utils/geoCoder')
+const Courses  =    require('./routes/courses')
 const app =         express()
 
 
@@ -22,8 +23,8 @@ app.use(express.json())
 
 //routes
 app.use('/api/v1/bootcamps', bootcamps);
+app.use('/api/v1/courses', Courses);
 
-// app.use('/api/v1/courses', courses);
 // app.use('/api/v1/auth', auth);
 // app.use('/api/v1/users', users);
 // app.use('/api/v1/reviews', reviews);
