@@ -1,5 +1,6 @@
 const express = require('express');
 const { getAllBootcamps, getOneBootcamp, updateOneBootcamp, deleteOneBootcamp, createNewBootcamp, getBootcampsWithinRadius } = require('../controllers/bootcamps');
+const { protect,authorize } = require('../middlewares/auth');
 const geocoder = require('../utils/geoCoder');
 const Courses = require('./courses')
 
@@ -9,13 +10,13 @@ router.route('/radius/:zipcode/:distance').
     get(getBootcampsWithinRadius)
 
 router.route('/').
-    get(getAllBootcamps).
-    post(createNewBootcamp)
+    get(protect,getAllBootcamps).
+    post(protect,authorize('publisher','admin'),createNewBootcamp)
 
 router.route('/:id').
     get(getOneBootcamp). 
-    put(updateOneBootcamp).
-    delete(deleteOneBootcamp)
+    put(protect, authorize('publisher','admin'),updateOneBootcamp).
+    delete(protect,authorize('publisher','admin'), deleteOneBootcamp)
 
 //re-route
 router.use('/:bootcampId/courses',Courses)

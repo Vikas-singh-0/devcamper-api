@@ -4,9 +4,11 @@ const bootcamps =   require('./routes/bootcamps')
 const morgan =      require('morgan')
 const connection =  require('./config/db')
 const colors =      require('colors')
+const cookieparser =require('cookie-parser')
 const errorHandler =require('./middlewares/error')
 const geocoder =    require('./utils/geoCoder')
 const Courses  =    require('./routes/courses')
+const auth     =    require('./routes/auth')
 const app =         express()
 
 
@@ -20,12 +22,12 @@ if (process.env.NODE_ENV=='development') {
     app.use(morgan('dev'))   
 }
 app.use(express.json())
+app.use(cookieparser())
 
 //routes
 app.use('/api/v1/bootcamps', bootcamps);
 app.use('/api/v1/courses', Courses);
-
-// app.use('/api/v1/auth', auth);
+app.use('/api/v1/auth', auth);
 // app.use('/api/v1/users', users);
 // app.use('/api/v1/reviews', reviews);
 app.use(errorHandler)

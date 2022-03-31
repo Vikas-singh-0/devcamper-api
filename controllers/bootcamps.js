@@ -1,5 +1,6 @@
 const asyncHandler = require("../middlewares/async");
 const Bootcamp = require("../models/bootcamp_model");
+const user = require("../models/user");
 const errorResponse = require("../utils/errorResponse");
 const geocoder = require("../utils/geoCoder");
 
@@ -88,6 +89,16 @@ module.exports.getOneBootcamp =asyncHandler( async (req, res, next) => {
 //@route    POST api/v1/bootcamps
 //@access   Private
 module.exports.createNewBootcamp = asyncHandler(async (req, res,next) => {
+
+    console.log(req.user.id);
+    req.body.user = req.user.id;
+
+    const checkPublishedBootcamp =await Bootcamp.findOne({user:req.user.id})
+    console.log(checkPublishedBootcamp);
+    if(checkPublishedBootcamp && req.user.role!='admin'){
+      return next(new errorResponse(404,"the user already has boocamop published"))
+    }
+
     const bootcamp = await Bootcamp.create(req.body);
 
     return res.status(200).json({
