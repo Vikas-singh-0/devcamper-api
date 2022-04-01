@@ -39,12 +39,59 @@ module.exports.login = asyncHandler(async (req,res,next)=>{
     
 })
 
+// @desc   Get logged in user profile
+//@route    GET api/v1/auth/getme
+//@access   Private
 module.exports.getme = asyncHandler(async (req,res,next)=>{
     console.log(req.user);
     let u = await User.findById(req.user.id)
     res.json({
         success:true,
         data:u
+    })
+})
+
+
+// @desc    Update logged in user profile
+//@route    Put api/v1/auth/getme
+//@access   Private
+module.exports.updateme = asyncHandler(async (req,res,next)=>{
+    // console.log(`${req.user}`.red.bold);
+
+    const fieldsToUpdate ={
+        email:req.body.email,
+        name:req.body.name
+    }
+
+    // if(req.user.role !=='admin' && req.user.id!==req.params.id){
+    //     return next(new errorResponse(404,"You cant updae the profile"))
+    // }
+    let u = await User.findByIdAndUpdate(req.user.id,fieldsToUpdate,{
+        new:true,
+        runValidators:true,
+        
+    })
+
+    res.json({
+        success:true,
+        data:u
+    })
+})
+
+module.exports.updatePassword = asyncHandler(async (req,res,next)=>{
+    
+    let user = await User.findById(req.user.id).select('+password')
+    console.log(`${user.password} , ${req.body.currentpassword}`.green.bold);
+    console.log(await bcrypt.compare(req.body.currentpassword,user.password));
+    if(!await bcrypt.compare(req.body.currentpassword,user.password)){
+        return next(new errorResponse(404,"wrong password"))
+    }
+    user.password = req.body.newpassword;
+    await user.save()
+    return res.status(200).json({
+        success:true,
+        message:"password changed success",
+        user
     })
 })
 
@@ -65,3 +112,4 @@ const sendTokenResponse = (user,statusCode ,res) =>{
             token
         })
 }
+

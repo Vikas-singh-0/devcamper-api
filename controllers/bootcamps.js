@@ -111,13 +111,19 @@ module.exports.createNewBootcamp = asyncHandler(async (req, res,next) => {
 //@route    PUT api/v1/bootcamps/:id
 //@access   Private
 module.exports.updateOneBootcamp =asyncHandler(async (req, res,next) => {
-    const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
+    let bootcamp = await Bootcamp.findById(req.params.id) 
     if (!bootcamp) {
       return res.status(400).json({ success: false });
     }
+    if(bootcamp.user.toString()!==req.user.id && req.user!=="admin"){
+      return next(new errorResponse(404,"not authorised to update"))
+    }
+    
+    bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
     return res.status(200).json({
       status: "success",
       data: bootcamp,

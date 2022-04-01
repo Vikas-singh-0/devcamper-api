@@ -49,14 +49,20 @@ module.exports.getCourse = asyncHandler(async (req,res,next)=>{
 //@access   Private
 module.exports.createCourse = asyncHandler(async (req,res,next)=>{
     req.body.id= req.params.id
-    console.log(req.params.id);
+    req.body.user = req.user.id
     const bootcamp = await Bootcamp.findById(req.params.bootcampId)
 
     if (!bootcamp) {
         return next(new errorResponse(404,'the bootcamp does not exists'))
     }
-    const course = await Course.create(req.body)
-  
+    
+    
+    if(bootcamp.user.toString()!==req.user.id && req.user.role !=="admin"){
+        return next(new errorResponse(404,'User not authorised'))
+    }
+
+    let course = await Course.create(req.body)
+
     return res.status(200).json({
         success:true,
         data:course
@@ -69,6 +75,9 @@ module.exports.updateCourse = asyncHandler(async (req,res,next)=>{
 
     if (!course) {
         return next(errorResponse(404,"course not found"))
+    }
+    if(course.user.toString()!==req.user.id && req.user.role !=="admin"){
+        return next(new errorResponse(404,'User not authorised'))
     }
 
     course = await Course.findByIdAndUpdate(req.params.id,req.body,{
@@ -89,6 +98,10 @@ module.exports.deleteCourse = asyncHandler(async (req,res,next)=>{
 
     if (!course) {
         return next(errorResponse(404,"course not found"))
+    }
+
+    if(course.user.toString()!==req.user.id && req.user.role !=="admin"){
+        return next(new errorResponse(404,'User not authorised'))
     }
 
     course = await Course.findByIdAndDelete(req.params.id)
