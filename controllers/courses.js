@@ -48,7 +48,7 @@ module.exports.getCourse = asyncHandler(async (req,res,next)=>{
 //@route    POST api/v1/bootcamps/:id/courses
 //@access   Private
 module.exports.createCourse = asyncHandler(async (req,res,next)=>{
-    req.body.id= req.params.id
+    req.body.bootcamp = req.params.bootcampId
     req.body.user = req.user.id
     const bootcamp = await Bootcamp.findById(req.params.bootcampId)
 
@@ -56,10 +56,10 @@ module.exports.createCourse = asyncHandler(async (req,res,next)=>{
         return next(new errorResponse(404,'the bootcamp does not exists'))
     }
     
-    
-    if(bootcamp.user.toString()!==req.user.id && req.user.role !=="admin"){
-        return next(new errorResponse(404,'User not authorised'))
-    }
+    //creater of bootcamp is the logged in user
+    // if(bootcamp.user.toString()!==req.user.id && req.user.role !=="admin"){
+    //     return next(new errorResponse(404,'User not authorised'))
+    // }
 
     let course = await Course.create(req.body)
 

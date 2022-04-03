@@ -2,7 +2,8 @@ const express = require('express');
 const { getAllBootcamps, getOneBootcamp, updateOneBootcamp, deleteOneBootcamp, createNewBootcamp, getBootcampsWithinRadius } = require('../controllers/bootcamps');
 const { protect,authorize } = require('../middlewares/auth');
 const geocoder = require('../utils/geoCoder');
-const Courses = require('./courses')
+const Courses = require('./courses');
+const reviewRouter = require('./review');
 
 const router= express.Router();
 
@@ -20,6 +21,7 @@ router.route('/:id').
 
 //re-route
 router.use('/:bootcampId/courses',Courses)
+router.use('/:bootcampId/reviews',reviewRouter)
 
 
 module.exports = router;

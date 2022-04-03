@@ -3,6 +3,7 @@ const Bootcamp = require("../models/bootcamp_model");
 const User = require("../models/user");
 const errorResponse = require("../utils/errorResponse");
 const bcrypt = require('bcrypt');
+const cookie = require('cookie-parser')
 
 // @desc    Register user
 //@route    GET api/v1/auth/register
@@ -51,6 +52,17 @@ module.exports.getme = asyncHandler(async (req,res,next)=>{
     })
 })
 
+//@desc     Log out user profile
+//@route    GET api/v1/auth/logout
+//@access   Private
+module.exports.logout = asyncHandler(async (req,res,next)=>{
+   res.cookie('token','none',{expires:new Date(Date.now()+10*1000),httpOnly:true})
+    res.json({
+        success:true,
+        data:{}
+    })
+})
+
 
 // @desc    Update logged in user profile
 //@route    Put api/v1/auth/getme
@@ -81,8 +93,7 @@ module.exports.updateme = asyncHandler(async (req,res,next)=>{
 module.exports.updatePassword = asyncHandler(async (req,res,next)=>{
     
     let user = await User.findById(req.user.id).select('+password')
-    console.log(`${user.password} , ${req.body.currentpassword}`.green.bold);
-    console.log(await bcrypt.compare(req.body.currentpassword,user.password));
+    
     if(!await bcrypt.compare(req.body.currentpassword,user.password)){
         return next(new errorResponse(404,"wrong password"))
     }
