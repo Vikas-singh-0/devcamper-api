@@ -31,6 +31,9 @@ app.use(senetize());
 app.use(helmet());
 app.use(xss());
 //routes
+app.use('/',(req,res)=>{
+    res.redirect('https://documenter.getpostman.com/view/18356172/UVyswvfK')
+})
 app.use('/api/v1/bootcamps', bootcamps);
 app.use('/api/v1/courses', Courses);
 app.use('/api/v1/auth', auth);
