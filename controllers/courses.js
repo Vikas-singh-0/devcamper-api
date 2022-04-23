@@ -69,6 +69,9 @@ module.exports.createCourse = asyncHandler(async (req,res,next)=>{
     })
 })
 
+// @desc    Update course
+//@route    PUT api/v1/courses/:id
+//@access   Private
 module.exports.updateCourse = asyncHandler(async (req,res,next)=>{
     
     let course = await Course.findById(req.params.id)
@@ -91,7 +94,9 @@ module.exports.updateCourse = asyncHandler(async (req,res,next)=>{
     })
 })
 
-
+// @desc    Delte course
+//@route    DELETE api/v1/courses/:id
+//@access   Private
 module.exports.deleteCourse = asyncHandler(async (req,res,next)=>{
     
     let course = await Course.findById(req.params.id)

@@ -12,8 +12,8 @@ const auth     =    require('./routes/auth')
 const reviewRouter =require('./routes/review')
 const app =         express()
 const senetize =    require('express-mongo-sanitize')
-const helmet =      require('helmet')
-const xss =         require('xss-clean')
+// const helmet =      require('helmet')
+// const xss =         require('xss-clean')
 
 //environment  variabbles
 env.config({path:'./config/config.env'});
@@ -28,11 +28,11 @@ app.use(express.json())
 app.use(cookieparser())
 //security
 app.use(senetize());
-app.use(helmet());
-app.use(xss());
+// app.use(helmet());
+// app.use(xss());
 //routes
 app.use('/',(req,res)=>{
-    res.redirect('https://documenter.getpostman.com/view/18356172/UVyswvfK')
+    res.json({name:"hi"})
 })
 app.use('/api/v1/bootcamps', bootcamps);
 app.use('/api/v1/courses', Courses);

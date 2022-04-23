@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const cookie = require('cookie-parser')
 
 // @desc    Register user
-//@route    GET api/v1/auth/register
+//@route    POST api/v1/auth/register
 //@access   Public
 module.exports.register= asyncHandler(async (req,res,next)=>{
 
@@ -18,7 +18,7 @@ module.exports.register= asyncHandler(async (req,res,next)=>{
 })
 
 // @desc    Login user
-//@route    GET api/v1/auth/login
+//@route    POST api/v1/auth/login
 //@access   Public
 module.exports.login = asyncHandler(async (req,res,next)=>{
     
@@ -40,7 +40,7 @@ module.exports.login = asyncHandler(async (req,res,next)=>{
     
 })
 
-// @desc   Get logged in user profile
+// @desc    Get logged in user profile
 //@route    GET api/v1/auth/getme
 //@access   Private
 module.exports.getme = asyncHandler(async (req,res,next)=>{
@@ -90,6 +90,9 @@ module.exports.updateme = asyncHandler(async (req,res,next)=>{
     })
 })
 
+// @desc    Update logged in user password
+//@route    Put api/v1/auth/updatepassword
+//@access   Private
 module.exports.updatePassword = asyncHandler(async (req,res,next)=>{
     
     let user = await User.findById(req.user.id).select('+password')
